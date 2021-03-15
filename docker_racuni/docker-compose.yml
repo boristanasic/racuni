@@ -1,0 +1,40 @@
+version: '2'
+# in order to make this work, external docker network has to be created first, type this in command line:
+# docker network create nginx-proxy
+
+# then add following line into hosts file if your environment is windows:
+# 192.168.99.100 local.phillipjeffries.com
+
+# or this line if your environment is linux:
+# 127.0.0.1 local.phillipjeffries.com
+
+
+# https://stackoverflow.com/questions/46443479/jwilder-nginx-proxy-not-able-to-integrate-ssl-with-nginx
+services:
+  web_racuni:
+    container_name: racuni
+    env_file:
+      - docker.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    expose:
+      - 443
+      - 9000
+    volumes:
+      - /dev/shm:/dev/shm
+      - "${PROJECT_ROOT}:/var/www/local.racuni.com"
+    extra_hosts:
+     - "local.racuni.com:127.0.0.1"
+#  memcached:
+#    image: memcached:latest
+networks:
+  default:
+    external:
+      name: nginx-proxy
+
+
+
+
+
